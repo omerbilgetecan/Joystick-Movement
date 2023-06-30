@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class Hero: MonoBehaviour
 {
-    [Range(0, 1)] public float GameSpeed;
-
-    float handle_uzanim;
+    float handle_pos;
     Vector2 handleVec;
     public Animator animator;
 
@@ -17,17 +15,16 @@ public class Hero: MonoBehaviour
 
     
 
-    void Update()
+    void FixedUpdate()
     {
         Movement();
-        Combat();
-        
+
     }
     void Movement()
     {
         
         handleVec = handle.transform.localPosition;
-        animator.SetFloat("speed", handle_uzanim);
+        animator.SetFloat("speed", handle_pos);
         float x = joystick.Horizontal;
         float y = joystick.Vertical;
         print(x + "," + y);
@@ -40,28 +37,18 @@ public class Hero: MonoBehaviour
 
         if (handleVec != Vector2.zero)
         {
-            handle_uzanim = Mathf.Sqrt(handleVec.x * handleVec.x + handleVec.y * handleVec.y) / 128;
+            handle_pos = Mathf.Sqrt(handleVec.x * handleVec.x + handleVec.y * handleVec.y) / 128;
             float angle = Mathf.Atan2(handleVec.x, handleVec.y) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(0, -35 + angle, 0), rot_speed * Time.deltaTime);
             
         }
         else
         {
-            handle_uzanim -= Time.deltaTime * move_speed ;
-            handle_uzanim= Mathf.Clamp(handle_uzanim, 0, 1);
+            handle_pos -= Time.deltaTime * move_speed ;
+            handle_pos= Mathf.Clamp(handle_pos, 0, 1);
             
         }
 
         
     }
-    
-    void Combat()
-    {
-        Time.timeScale = GameSpeed;
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            animator.SetTrigger("attack0");
-        }
-    }
-  
 }
